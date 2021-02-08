@@ -23,3 +23,28 @@ export function fetchBoard() {
     }
   }
 }
+
+export function validateBoard(board) {
+  return async (dispatch) => {
+    try {
+      axios({
+        method: 'POST',
+        url: 'https://sugoku.herokuapp.com/validate',
+        data: board
+      })
+      .then(({data}) => {
+        console.log(data)
+        dispatch({
+          type: 'VALIDATE_BOARD',
+          payload: data
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}

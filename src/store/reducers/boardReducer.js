@@ -1,7 +1,8 @@
 const initialState = {
   board: {
     board: []
-  }
+  },
+  validationResult: {}
 }
 
 const boardReducer = (state = initialState, action) => {
@@ -11,6 +12,11 @@ const boardReducer = (state = initialState, action) => {
         ...state,
         board: action.payload
       }
+    case 'VALIDATE_BOARD':
+        return {
+          ...state,
+          validationResult: action.payload
+        }
     default :
       return state
   }
