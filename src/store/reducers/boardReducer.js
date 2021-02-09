@@ -1,8 +1,8 @@
 const initialState = {
-  board: {
-    board: []
-  },
-  validationResult: {}
+  board: {},
+  validationResult: {
+    status: ''
+  }
 }
 
 const boardReducer = (state = initialState, action) => {

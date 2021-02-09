@@ -5,14 +5,13 @@ export default function Finish({ navigation, route}) {
   const { username } = route.params
 
   function playAgain(e) {
-    navigation.navigate('Game')
+    navigation.navigate('Home')
   }
 
   return (
     <View style={styles.container}>
       <View>
-        <Text>Username : {username}</Text>
-        <Text>Board Status : ''</Text>
+        <Text>Congratulation {username}, you have solved the board</Text>
       </View>
       <View style={{marginTop: 20}}>
         <Button

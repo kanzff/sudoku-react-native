@@ -22,11 +22,6 @@ export default function App() {
             <Stack.Screen name="Home" component={Home}/>
             <Stack.Screen name="Game" component={Game}/>
             <Stack.Screen name="Finish" component={Finish}/>
-            {/* <View style={styles.container}>
-              <Text>SUDOKU</Text>
-              <StatusBar style="auto" />
-              <Game></Game>
-            </View> */}
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

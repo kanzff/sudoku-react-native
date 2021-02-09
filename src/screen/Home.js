@@ -9,9 +9,10 @@ export default function Home({ navigation }) {
     setInputName(value)
   }
 
-  function handleButton(e) {
+  function handleButton(e, difficulty) {
     navigation.navigate("Game", {
-      username: inputName
+      username: inputName,
+      difficulty
     })
   }
 
@@ -23,12 +24,30 @@ export default function Home({ navigation }) {
         value={inputName}
         onChange={(e) => {handleUsernameChange(e)}}
       ></TextInput>
-      <Button
-        style={styles.button}
-        title="confirm"
-        onPress={handleButton}
-        >Confirm
-      </Button>
+      <View style={styles.button}>
+        <Button
+          title="EASY"
+          onPress={(e) => handleButton(e, 'easy')}
+          >
+        </Button>
+        <Button
+          title="MEDIUM"
+          onPress={(e) => handleButton(e, 'medium')}
+          >
+        </Button>
+      </View>
+      <View style={styles.button}>
+        <Button
+          title="HARD"
+          onPress={(e) => handleButton(e, 'hard')}
+          >
+        </Button>
+        <Button
+          title="RANDOM"
+          onPress={(e) => handleButton(e, 'random')}
+          >
+        </Button>
+      </View>
     </View>
   )
 }
@@ -50,6 +69,7 @@ const styles = {
     borderWidth: 1
   },
   button: {
-    marginTop: 10
+    flexDirection: 'row',
+    marginTop: 20
   }
 }

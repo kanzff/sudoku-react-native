@@ -1,30 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, TextInput, Button } from "react-native";
-import { fetchBoard, validateBoard } from '../store/actions/boardAction'
+import { StyleSheet, View, Text, TextInput, Button, ScrollView } from "react-native";
+import { fetchBoard, validateBoard, solveBoard } from '../store/actions/boardAction'
 import { useSelector, useDispatch } from 'react-redux'
 
 export default function Game({ navigation, route}) {
-  const { username } = route.params
+  const { username, difficulty } = route.params
   const dispatch = useDispatch()
   const [inputNumber, setInputNumber] = useState('')
+  const [newBoard, setNewBoard] = useState({
+    board: []
+  })
   
   useEffect(() => {
-    dispatch(fetchBoard())
-  }, [dispatch])
-
+    dispatch(fetchBoard(difficulty))
+  }, [])
+  
   const { board } = useSelector((state) => state.board)
+  Object.assign(newBoard, board)
   
   function handleInputChange(e, idx1, idx2) {
     const value = e.nativeEvent.text
-    board.board[idx1][idx2] = value
+    newBoard.board[idx1][idx2] = +value
   }
   
   function validate() {
-    dispatch(validateBoard(board))
-    navigation.navigate('Finish', {
-      username
-    })
+    dispatch(validateBoard(newBoard))
   }
+
+  function solve() {
+    dispatch(solveBoard(newBoard))
+  }
+
+  const { validationResult } = useSelector((state) => state.board)
+
+  useEffect(() => {
+    if (validationResult.status === 'solved') {
+      navigation.navigate('Finish', {
+        username
+      })
+    }
+  }, [validationResult])
 
   return (
     <View style={styles.container}>
@@ -32,16 +47,15 @@ export default function Game({ navigation, route}) {
         <Text style={styles.header}>SUDOKU</Text>
       </View>
       <View>
-        {board.board.map((tiles, idx1) => {
-          // console.log(index)
+        {board.board && board.board.map((tiles, idx1) => {
           return (
           <View key={idx1} style={{flexDirection: 'row'}}>
             {tiles.map((tile, idx2) => {
-              // console.log(idx)
               if (tile.toString() !== '0') {
                 return (
                   <View key={idx2} style={styles.tile}>
                     <Text
+                      style={{color: 'blue'}}
                       >{tile}
                     </Text>
                   </View>
@@ -50,6 +64,8 @@ export default function Game({ navigation, route}) {
                 return (
                   <View key={idx2} style={styles.tile}>
                     <TextInput
+                      style={{textAlign: 'center'}}
+                      maxLength={1}
                       Value={inputNumber}
                       onChange={(e) => handleInputChange(e, idx1, idx2)}
                       keyboardType="numeric"
@@ -63,12 +79,21 @@ export default function Game({ navigation, route}) {
           )
         })}
       </View>
-      <View style={{marginTop: 30}}>
-        <Button
-          title='validate'
-          onPress={validate}
-          >Submit
-        </Button>  
+      <View style={styles.buttons}>
+        <View style={{marginTop: 40}}>
+          <Button
+            title='Validate'
+            onPress={() => validate()}
+            >
+          </Button>  
+        </View>
+        <View style={{marginTop: 40, marginLeft: 70}}>
+          <Button
+            title='Solve'
+            onPress={() => solve()}
+            >
+          </Button>  
+        </View>
       </View>
     </View>
   )
@@ -92,5 +117,8 @@ const styles = {
   header: {
     marginBottom: 40,
     fontSize: 40
+  },
+  buttons: {
+    flexDirection: 'row'
   }
 }
