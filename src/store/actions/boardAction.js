@@ -5,7 +5,7 @@ export function fetchBoard() {
     try {
       axios({
         method: 'GET',
-        url: 'https://sugoku.herokuapp.com/board'
+        url: 'https://sugoku.herokuapp.com/board?difficulty=easy'
       })
       .then(({data}) => {
         // console.log(data)

@@ -1,70 +1,55 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, TextInput, Button } from "react-native";
-import { fetchBoard, validateBoard } from '../store/actions/boardAction'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useState } from 'react'
+import { Button, Text, TextInput, View } from "react-native";
 
-export default function Home() {
-  const dispatch = useDispatch()
-  const [inputNumber, setInputNumber] = useState('')
-  
-  useEffect(() => {
-    dispatch(fetchBoard())
-  }, [dispatch])
+export default function Home({ navigation }) {
+  const [inputName, setInputName] = useState('')
 
-  const { board } = useSelector((state) => state.board)
-  
-  function handleInputChange(e, idx1, idx2) {
-    // console.log('ini index', idx1, idx2)
+  function handleUsernameChange(e) {
     const value = e.nativeEvent.text
-    // console.log(value)
-    // console.log('before', board.board[idx1][idx2])
-    board.board[idx1][idx2] = value
-    // console.log('after', board.board[idx1][idx2])
+    setInputName(value)
   }
-  
-  function validate() {
-    dispatch(validateBoard(board))
+
+  function handleButton(e) {
+    navigation.navigate("Game", {
+      username: inputName
+    })
   }
 
   return (
-    <>
-      <View style={{marginTop: 10}}>
-        {board.board.map((tiles, idx1) => {
-          // console.log(index)
-          return (
-          <View key={idx1} style={{flexDirection: 'row'}}>
-            {tiles.map((tile, idx2) => {
-              // console.log(idx)
-              return (
-                <View key={idx2} style={styles.tile}>
-                  <TextInput
-                    Value={inputNumber}
-                    onChange={(e) => handleInputChange(e, idx1, idx2)}
-                    keyboardType="numeric"
-                    >{tile}
-                  </TextInput>
-                </View>
-              )
-            })}
-          </View>
-          )
-        })}
-      </View>
-      <View style={{marginTop: 10}}>
-        <Button
-          title='validate'
-          onPress={validate}
-          >Submit
-        </Button>  
-      </View>
-    </>
+    <View style={styles.container}>
+      <Text>Username</Text>
+      <TextInput 
+        style={styles.input}
+        value={inputName}
+        onChange={(e) => {handleUsernameChange(e)}}
+      ></TextInput>
+      <Button
+        style={styles.button}
+        title="confirm"
+        onPress={handleButton}
+        >Confirm
+      </Button>
+    </View>
   )
 }
 
 const styles = {
-  tile: {
-    borderWidth: 1,
-    width: 30,
-    height: 30
+  container: {
+    flex: 1,
+    marginTop: 10,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  input: {
+    width: 100,
+    paddingLeft: 5,
+    paddingRight: 5,
+    marginTop: 10,
+    marginBottom: 10,
+    borderWidth: 1
+  },
+  button: {
+    marginTop: 10
   }
 }
