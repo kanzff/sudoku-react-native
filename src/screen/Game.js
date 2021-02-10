@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, TextInput, Button, ScrollView } from "react-native";
-import { fetchBoard, validateBoard, solveBoard } from '../store/actions/boardAction'
+import { fetchBoard, validateBoard, solveBoard, emptyBoard } from '../store/actions/boardAction'
 import { useSelector, useDispatch } from 'react-redux'
 import { color } from "react-native-reanimated";
 
@@ -14,21 +14,32 @@ export default function Game({ navigation, route}) {
   const [inputBoard, setInputBoard] = useState({
     board: []
   })
-  const { board } = useSelector((state) => state.board)
+  const { board, solvedBoard } = useSelector((state) => state.board)
   
   useEffect(() => {
     dispatch(fetchBoard(difficulty))
+    dispatch(emptyBoard())
     // setInitBoard(board)
     // setInputBoard(board)
   }, [])
 
   useEffect(() => {
-    console.log('use effect 2')
+    // console.log('use effect 2')
     if (board.board.length > 0) {
       setInitBoard(board)
       setInputBoard(board)
     }
   }, [board])
+
+  useEffect(() => {
+    console.log('ini solved board', solvedBoard)
+    if (solvedBoard.solution.length > 0) {
+      console.log('use effect solved')
+      setInputBoard({
+        board: solvedBoard.solution
+      })
+    }
+  }, [solvedBoard])
   
   // Object.assign(initBoard, board)
   
@@ -43,6 +54,7 @@ export default function Game({ navigation, route}) {
   }
   
   function validate() {
+    console.log(inputBoard)
     dispatch(validateBoard(inputBoard))
   }
 

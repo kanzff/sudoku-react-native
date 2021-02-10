@@ -7,7 +7,7 @@ const initialState = {
     status: ''
   },
   solvedBoard: {
-    board: []
+    solution: []
   }
 }
 

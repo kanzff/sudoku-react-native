@@ -92,10 +92,10 @@ export function solveBoard(board) {
         data: encodeParams(board)
       })
       .then(({data}) => {
-        console.log(data)
+        // console.log(data)
         dispatch({
           type: 'SOLVE_BOARD',
-          payload: data.solution
+          payload: data
         })
       })
       .catch(err => {
@@ -106,4 +106,18 @@ export function solveBoard(board) {
       console.log(err)
     }
   }
+}
+
+export function emptyBoard() {
+  return async (dispatch) => {
+    try {
+      dispatch({
+        type: 'VALIDATE_BOARD',
+        payload: 'unsolved'
+      })
+    } catch(err) {
+      console.log(err)
+    }
+  }
+  
 }

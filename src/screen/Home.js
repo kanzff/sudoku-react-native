@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import { Button, Text, TextInput, View } from "react-native";
+import { useSelector, useDispatch } from 'react-redux'
+import { emptyBoard } from '../store/actions/boardAction'
+
 
 export default function Home({ navigation }) {
+  const dispatch = useDispatch()
   const [inputName, setInputName] = useState('')
 
   function handleUsernameChange(e) {
@@ -10,6 +14,7 @@ export default function Home({ navigation }) {
   }
 
   function handleButton(e, difficulty) {
+    dispatch(emptyBoard())
     navigation.navigate("Game", {
       username: inputName,
       difficulty
