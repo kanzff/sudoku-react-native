@@ -7,24 +7,20 @@ import { color } from "react-native-reanimated";
 export default function Game({ navigation, route}) {
   const { username, difficulty } = route.params
   const dispatch = useDispatch()
-  // const [inputNumber, setInputNumber] = useState('')
   const [initBoard, setInitBoard] = useState({
     board: []
   })
   const [inputBoard, setInputBoard] = useState({
     board: []
   })
-  const { board, solvedBoard } = useSelector((state) => state.board)
+  const { board, solvedBoard, loading } = useSelector((state) => state.board)
   
   useEffect(() => {
     dispatch(fetchBoard(difficulty))
     dispatch(emptyBoard())
-    // setInitBoard(board)
-    // setInputBoard(board)
   }, [])
 
   useEffect(() => {
-    // console.log('use effect 2')
     if (board.board.length > 0) {
       setInitBoard(board)
       setInputBoard(board)
@@ -32,29 +28,20 @@ export default function Game({ navigation, route}) {
   }, [board])
 
   useEffect(() => {
-    console.log('ini solved board', solvedBoard)
     if (solvedBoard.solution.length > 0) {
-      console.log('use effect solved')
       setInputBoard({
         board: solvedBoard.solution
       })
     }
   }, [solvedBoard])
   
-  // Object.assign(initBoard, board)
-  
   const handleInputChange = (value, idx1, idx2) => {
-    // const value = e.nativeEvent.text
     let newBoard = JSON.parse(JSON.stringify(inputBoard))
-    // initBoard.board[idx1][idx2] = +value
     newBoard.board[idx1][idx2] = +value
-    // console.log('before', inputBoard)
     setInputBoard(newBoard)
-    // console.log('after', inputBoard)
   }
   
   function validate() {
-    console.log(inputBoard)
     dispatch(validateBoard(inputBoard))
   }
 
@@ -77,38 +64,40 @@ export default function Game({ navigation, route}) {
       <View>
         <Text style={styles.header}>SUDOKU</Text>
       </View>
-      {/* <View>
+      <View>
+        <Text style={styles.message}>Good Luck {username}</Text>
+      </View>
+      <View>
         {loading && 
           <Text>Loading Board ...</Text>
         }
-      </View> */}
+      </View>
       <View>
-        {inputBoard.board.length > 0 && inputBoard.board.map((tiles, idx1) => {
+        {!loading && inputBoard.board.map((tiles, idx1) => {
           return (
           <View key={idx1} style={{flexDirection: 'row'}}>
             {tiles.map((tile, idx2) => {
-              // if (tile.toString() !== '0') {
-              //   return (
-              //     <View key={idx2} style={styles.tile}>
-              //       <Text
-              //         style={{color: 'blue'}}
-              //         >{tile}
-              //       </Text>
-              //     </View>
-              //   )
-              // } else {
-                return (
-                  <TextInput
-                    key={idx2}
-                    style={styles.tile}
-                    maxLength={1}
-                    value={tile === 0 ? '' : tile.toString()}
-                    editable={initBoard.board[idx1][idx2] === 0 ? true : false}
-                    onChangeText={(value) => handleInputChange(value, idx1, idx2)}
-                    keyboardType="numeric"
-                  />
-                )
-              // }
+              return (
+                <TextInput
+                  key={idx2}
+                  style={
+                    [
+                      initBoard.board[idx1][idx2] === 0 ?
+                      styles.tileInput :
+                      styles.tile,
+                      ((idx2 > 2 && idx2 < 6 && (idx1 < 3 || idx1 > 5)) ||
+                      ((idx2 < 3 || idx2 > 5) && (idx1 > 2 && idx1 < 6))) ?
+                      styles.box :
+                      styles.box2
+                    ]
+                  }
+                  maxLength={1}
+                  value={tile === 0 ? '' : tile.toString()}
+                  editable={initBoard.board[idx1][idx2] === 0 ? true : false}
+                  onChangeText={(value) => handleInputChange(value, idx1, idx2)}
+                  keyboardType="numeric"
+                />
+              )
             })}
           </View>
           )
@@ -134,7 +123,7 @@ export default function Game({ navigation, route}) {
   )
 }
 
-const styles = {
+const styles = StyleSheet.create({
   tile: {
     borderWidth: 1,
     width: 30,
@@ -142,20 +131,49 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
-    color: 'blue'
+    color: 'black',
+    borderRadius: 3,
+    fontWeight: 'bold'
+  },
+  tileInput: {
+    borderWidth: 1,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    color: 'white',
+    borderRadius: 3,
+    fontWeight: 'bold'
+  },
+  box: {
+    backgroundColor: '#1E90FF'
+  },
+  box2: {
+    backgroundColor: '#00BFFF'
   },
   container: {
     flex: 1,
     marginTop: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#90EE90',
     alignItems: 'center',
     justifyContent: 'center'
   },
   header: {
-    marginBottom: 40,
-    fontSize: 40
+    color: 'black',
+    marginBottom: 20,
+    fontSize: 40,
+    fontWeight: 'bold',
+    fontFamily: 'serif'
   },
   buttons: {
     flexDirection: 'row'
+  },
+  message: {
+    marginBottom: 20,
+    fontWeight: 'bold'
   }
-}
+})
+
+// ((idx2 > 2 && idx2 < 6 && (idx1 < 3 || idx1 > 5)) ||
+// ((idx2 < 3 || idx2 > 5) && (idx1 > 2 && idx1 < 6)))

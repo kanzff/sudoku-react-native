@@ -10,8 +10,9 @@ export default function Finish({ navigation, route}) {
 
   return (
     <View style={styles.container}>
-      <View>
-        <Text>Congratulation {username}, you have solved the board</Text>
+      <View style={styles.message}>
+        <Text style={{fontWeight: 'bold', fontSize: 30, fontFamily: 'serif'}}>Congratulation {username}</Text>
+        <Text style={{fontWeight: 'bold', fontSize: 20, fontFamily: 'serif'}}>You Have Solved the Board</Text>
       </View>
       <View style={{marginTop: 20}}>
         <Button
@@ -26,8 +27,11 @@ export default function Finish({ navigation, route}) {
 const styles = {
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#90EE90'
+  },
+  message: {
+    marginTop: 70,
+    marginBottom: 70
   }
 }

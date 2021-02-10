@@ -2,7 +2,7 @@ const initialState = {
   board: {
     board: []
   },
-  // loading: true,
+  loading: false,
   validationResult: {
     status: ''
   },
