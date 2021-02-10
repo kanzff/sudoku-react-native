@@ -13,6 +13,7 @@ export default function Game({ navigation, route}) {
   const [inputBoard, setInputBoard] = useState({
     board: []
   })
+  let [timer, setTimer] = useState(0)
   const { board, solvedBoard, loading } = useSelector((state) => state.board)
   
   useEffect(() => {
@@ -20,10 +21,18 @@ export default function Game({ navigation, route}) {
     dispatch(emptyBoard())
   }, [])
 
+  function counter() {
+      setInterval(() => {
+      let newTimer = timer++
+      setTimer(newTimer)
+    }, 1000);
+  }
+
   useEffect(() => {
     if (board.board.length > 0) {
       setInitBoard(board)
       setInputBoard(board)
+      counter()
     }
   }, [board])
 
@@ -48,13 +57,15 @@ export default function Game({ navigation, route}) {
   function solve() {
     dispatch(solveBoard(initBoard))
   }
-
+  
   const { validationResult } = useSelector((state) => state.board)
 
   useEffect(() => {
     if (validationResult.status === 'solved') {
+      clearInterval(counter)
       navigation.navigate('Finish', {
-        username
+        username,
+        timer
       })
     }
   }, [validationResult])
@@ -66,6 +77,9 @@ export default function Game({ navigation, route}) {
       </View>
       <View>
         <Text style={styles.message}>Good Luck {username}</Text>
+      </View>
+      <View>
+        <Text style={styles.message}>Time : {timer}</Text>
       </View>
       <View>
         {loading && 

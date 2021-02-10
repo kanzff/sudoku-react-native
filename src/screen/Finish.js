@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, Button } from 'react-native'
 
 export default function Finish({ navigation, route}) {
-  const { username } = route.params
+  const { username, timer } = route.params
 
   function playAgain(e) {
     navigation.navigate('Home')
@@ -13,6 +13,7 @@ export default function Finish({ navigation, route}) {
       <View style={styles.message}>
         <Text style={{fontWeight: 'bold', fontSize: 30, fontFamily: 'serif'}}>Congratulation {username}</Text>
         <Text style={{fontWeight: 'bold', fontSize: 20, fontFamily: 'serif'}}>You Have Solved the Board</Text>
+        <Text style={{fontWeight: 'bold', fontSize: 20, fontFamily: 'serif'}}>Your Time : {timer} Second</Text>
       </View>
       <View style={{marginTop: 20}}>
         <Button
