@@ -2,33 +2,52 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, TextInput, Button, ScrollView } from "react-native";
 import { fetchBoard, validateBoard, solveBoard } from '../store/actions/boardAction'
 import { useSelector, useDispatch } from 'react-redux'
+import { color } from "react-native-reanimated";
 
 export default function Game({ navigation, route}) {
   const { username, difficulty } = route.params
   const dispatch = useDispatch()
-  const [inputNumber, setInputNumber] = useState('')
-  const [newBoard, setNewBoard] = useState({
+  // const [inputNumber, setInputNumber] = useState('')
+  const [initBoard, setInitBoard] = useState({
     board: []
   })
+  const [inputBoard, setInputBoard] = useState({
+    board: []
+  })
+  const { board } = useSelector((state) => state.board)
   
   useEffect(() => {
     dispatch(fetchBoard(difficulty))
+    // setInitBoard(board)
+    // setInputBoard(board)
   }, [])
+
+  useEffect(() => {
+    console.log('use effect 2')
+    if (board.board.length > 0) {
+      setInitBoard(board)
+      setInputBoard(board)
+    }
+  }, [board])
   
-  const { board } = useSelector((state) => state.board)
-  Object.assign(newBoard, board)
+  // Object.assign(initBoard, board)
   
-  function handleInputChange(e, idx1, idx2) {
-    const value = e.nativeEvent.text
+  const handleInputChange = (value, idx1, idx2) => {
+    // const value = e.nativeEvent.text
+    let newBoard = JSON.parse(JSON.stringify(inputBoard))
+    // initBoard.board[idx1][idx2] = +value
     newBoard.board[idx1][idx2] = +value
+    // console.log('before', inputBoard)
+    setInputBoard(newBoard)
+    // console.log('after', inputBoard)
   }
   
   function validate() {
-    dispatch(validateBoard(newBoard))
+    dispatch(validateBoard(inputBoard))
   }
 
   function solve() {
-    dispatch(solveBoard(newBoard))
+    dispatch(solveBoard(initBoard))
   }
 
   const { validationResult } = useSelector((state) => state.board)
@@ -46,34 +65,38 @@ export default function Game({ navigation, route}) {
       <View>
         <Text style={styles.header}>SUDOKU</Text>
       </View>
+      {/* <View>
+        {loading && 
+          <Text>Loading Board ...</Text>
+        }
+      </View> */}
       <View>
-        {board.board && board.board.map((tiles, idx1) => {
+        {inputBoard.board.length > 0 && inputBoard.board.map((tiles, idx1) => {
           return (
           <View key={idx1} style={{flexDirection: 'row'}}>
             {tiles.map((tile, idx2) => {
-              if (tile.toString() !== '0') {
+              // if (tile.toString() !== '0') {
+              //   return (
+              //     <View key={idx2} style={styles.tile}>
+              //       <Text
+              //         style={{color: 'blue'}}
+              //         >{tile}
+              //       </Text>
+              //     </View>
+              //   )
+              // } else {
                 return (
-                  <View key={idx2} style={styles.tile}>
-                    <Text
-                      style={{color: 'blue'}}
-                      >{tile}
-                    </Text>
-                  </View>
+                  <TextInput
+                    key={idx2}
+                    style={styles.tile}
+                    maxLength={1}
+                    value={tile === 0 ? '' : tile.toString()}
+                    editable={initBoard.board[idx1][idx2] === 0 ? true : false}
+                    onChangeText={(value) => handleInputChange(value, idx1, idx2)}
+                    keyboardType="numeric"
+                  />
                 )
-              } else {
-                return (
-                  <View key={idx2} style={styles.tile}>
-                    <TextInput
-                      style={{textAlign: 'center'}}
-                      maxLength={1}
-                      Value={inputNumber}
-                      onChange={(e) => handleInputChange(e, idx1, idx2)}
-                      keyboardType="numeric"
-                      >
-                    </TextInput>
-                  </View>
-                )
-              }
+              // }
             })}
           </View>
           )
@@ -105,7 +128,9 @@ const styles = {
     width: 30,
     height: 30,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    textAlign: 'center',
+    color: 'blue'
   },
   container: {
     flex: 1,

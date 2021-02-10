@@ -8,6 +8,7 @@ const encodeParams = (params) =>
   .join('&');
 
 export function fetchBoard(difficulty) {
+  // console.log('kepanggil')
   let url = ''
   switch (difficulty) {
     case 'easy':
@@ -33,11 +34,15 @@ export function fetchBoard(difficulty) {
         url: url
       })
       .then(({data}) => {
-        // console.log(data)
+        // console.log('ini oei',data.board)
         dispatch({
           type: 'FETCH_BOARD',
           payload: data
         })
+        // dispatch({
+        //   type: 'SET_LOADING',
+        //   payload: false
+        // })
       })
       .catch(err => {
         console.log(err)
@@ -50,6 +55,8 @@ export function fetchBoard(difficulty) {
 }
 
 export function validateBoard(board) {
+  console.log('board yg akan di validate', board)
+
   return async (dispatch) => {
     try {
       axios({
@@ -86,10 +93,10 @@ export function solveBoard(board) {
       })
       .then(({data}) => {
         console.log(data)
-        // dispatch({
-        //   type: 'VALIDATE_BOARD',
-        //   payload: data
-        // })
+        dispatch({
+          type: 'SOLVE_BOARD',
+          payload: data.solution
+        })
       })
       .catch(err => {
         console.log(err)
